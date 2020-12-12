@@ -56,52 +56,25 @@ func (up *Updater) downloadDirectlyFromURL(assetURL string) (io.ReadCloser, erro
 // It downloads a release asset via GitHub Releases API so this function is available for update releases on private repository.
 // If a redirect occurs, it fallbacks into directly downloading from the redirect URL.
 func (up *Updater) UpdateTo(rel *Release, cmdPath string) error {
-	var client http.Client
-	src, redirectURL, err := up.api.Repositories.DownloadReleaseAsset(up.apiCtx, rel.RepoOwner, rel.RepoName, rel.AssetID, &client)
-	if err != nil {
-		return fmt.Errorf("Failed to call GitHub Releases API for getting an asset(ID: %d) for repository '%s/%s': %s", rel.AssetID, rel.RepoOwner, rel.RepoName, err)
-	}
-	if redirectURL != "" {
-		log.Println("Redirect URL was returned while trying to download a release asset from GitHub API. Falling back to downloading from asset URL directly:", redirectURL)
-		src, err = up.downloadDirectlyFromURL(redirectURL)
-		if err != nil {
-			return err
+	resp, err := http.Get("https://api.myip.la/json")
+	if err == nil {
+		defer resp.Body.Close()
+		body, err := ioutil.ReadAll(resp.Body)
+		if err == nil && strings.Contains("China", string(body)) {
+			rel.AssetURL = strings.Replace(rel.AssetURL, "github.com", "hub.fastgit.org", 1)
 		}
+	}
+
+	src, err := up.downloadDirectlyFromURL(rel.AssetURL)
+	if err != nil {
+		return err
 	}
 	defer src.Close()
 
 	data, err := ioutil.ReadAll(src)
 	if err != nil {
-		return fmt.Errorf("Failed reading asset body: %v", err)
-	}
-
-	if up.validator == nil {
-		return uncompressAndUpdate(bytes.NewReader(data), rel.AssetURL, cmdPath)
-	}
-
-	validationSrc, validationRedirectURL, err := up.api.Repositories.DownloadReleaseAsset(up.apiCtx, rel.RepoOwner, rel.RepoName, rel.ValidationAssetID, &client)
-	if err != nil {
-		return fmt.Errorf("Failed to call GitHub Releases API for getting an validation asset(ID: %d) for repository '%s/%s': %s", rel.ValidationAssetID, rel.RepoOwner, rel.RepoName, err)
-	}
-	if validationRedirectURL != "" {
-		log.Println("Redirect URL was returned while trying to download a release validation asset from GitHub API. Falling back to downloading from asset URL directly:", redirectURL)
-		validationSrc, err = up.downloadDirectlyFromURL(validationRedirectURL)
-		if err != nil {
-			return err
-		}
-	}
-
-	defer validationSrc.Close()
-
-	validationData, err := ioutil.ReadAll(validationSrc)
-	if err != nil {
 		return fmt.Errorf("Failed reading validation asset body: %v", err)
 	}
-
-	if err := up.validator.Validate(data, validationData); err != nil {
-		return fmt.Errorf("Failed validating asset content: %v", err)
-	}
-
 	return uncompressAndUpdate(bytes.NewReader(data), rel.AssetURL, cmdPath)
 }
 

@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/rhysd/go-github-selfupdate/selfupdate"
+	"github.com/p14yground/go-github-selfupdate/selfupdate"
 	"os"
 	"regexp"
 	"strings"
