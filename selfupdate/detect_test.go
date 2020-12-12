@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/blang/semver"
-	"github.com/google/go-github/v30/github"
+	"github.com/google/go-github/github"
 )
 
 func TestDetectReleaseWithVersionPrefix(t *testing.T) {
