@@ -9,9 +9,11 @@ require (
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/onsi/gomega v1.4.2 // indirect
 	github.com/tcnksm/go-gitconfig v0.1.2
-	github.com/ulikunitz/xz v0.5.5
-	golang.org/x/net v0.0.0-20190311183353-d8887717615a // indirect
+	github.com/ulikunitz/xz v0.5.9
+	golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3 // indirect
 	golang.org/x/oauth2 v0.0.0-20181106182150-f42d05182288
+	golang.org/x/sys v0.0.0-20191026070338-33540a1f6037 // indirect
+	golang.org/x/text v0.3.5 // indirect
 	google.golang.org/appengine v1.3.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 )
