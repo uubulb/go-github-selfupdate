@@ -61,7 +61,7 @@ func (up *Updater) UpdateTo(rel *Release, cmdPath string) error {
 		defer resp.Body.Close()
 		body, err := ioutil.ReadAll(resp.Body)
 		if err == nil && strings.Contains("China", string(body)) {
-			rel.AssetURL = strings.Replace(rel.AssetURL, "github.com", "hub.fastgit.org", 1)
+			rel.AssetURL = strings.Replace(rel.AssetURL, "github.com", "dn-dao-github-mirror.daocloud.io", 1)
 		}
 	}
 
