@@ -11,10 +11,11 @@ import (
 
 // GiteeUpdater contains Gitee client and its context.
 type GiteeUpdater struct {
-	api       *gitee.APIClient
-	apiCtx    context.Context
-	validator Validator
-	filters   []*regexp.Regexp
+	api        *gitee.APIClient
+	apiCtx     context.Context
+	validator  Validator
+	filters    []*regexp.Regexp
+	binaryName string
 }
 
 // NewGiteeUpdater creates a new updater instance. It initializes Gitee API client.
@@ -39,7 +40,7 @@ func NewGiteeUpdater(config Config) (*GiteeUpdater, error) {
 	conf.HTTPClient = newHTTPClient(ctx, token)
 
 	client := gitee.NewAPIClient(conf)
-	return &GiteeUpdater{api: client, apiCtx: ctx, validator: config.Validator, filters: filtersRe}, nil
+	return &GiteeUpdater{api: client, apiCtx: ctx, validator: config.Validator, filters: filtersRe, binaryName: config.BinaryName}, nil
 }
 
 // DefaultGiteeUpdater creates a new updater instance with default configuration.

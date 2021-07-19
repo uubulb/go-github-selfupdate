@@ -52,7 +52,7 @@ func (up *GiteeUpdater) UpdateTo(rel *Release, cmdPath string) error {
 		return fmt.Errorf("Failed reading validation asset body: %v", err)
 	}
 
-	return uncompressAndUpdate(bytes.NewReader(data), rel.AssetURL, cmdPath)
+	return uncompressAndUpdate(bytes.NewReader(data), rel.AssetURL, cmdPath, up.binaryName)
 }
 
 // UpdateCommand updates a given command binary to the latest version.
@@ -115,7 +115,7 @@ func UpdateToGitee(assetURL, cmdPath string) error {
 		return err
 	}
 	defer src.Close()
-	return uncompressAndUpdate(src, assetURL, cmdPath)
+	return uncompressAndUpdate(src, assetURL, cmdPath, up.binaryName)
 }
 
 // UpdateCommandGitee updates a given command binary to the latest version.
