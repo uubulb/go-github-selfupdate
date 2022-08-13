@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/p14yground/go-github-selfupdate/selfupdate"
+	"github.com/naiba/go-github-selfupdate/selfupdate"
 )
 
 var version = "1.0.0"
