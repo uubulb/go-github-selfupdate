@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/naiba/go-github-selfupdate/selfupdate"
+	"github.com/nezhahq/go-github-selfupdate/selfupdate"
 )
 
 func usage() {

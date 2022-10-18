@@ -1,4 +1,4 @@
-module github.com/naiba/go-github-selfupdate
+module github.com/nezhahq/go-github-selfupdate
 
 go 1.19
 
