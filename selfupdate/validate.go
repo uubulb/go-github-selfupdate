@@ -27,7 +27,7 @@ type SHA2Validator struct {
 // additional asset file.
 func (v *SHA2Validator) Validate(release, asset []byte) error {
 	calculatedHash := fmt.Sprintf("%x", sha256.Sum256(release))
-	hash := fmt.Sprintf("%s", asset[:sha256.BlockSize])
+	hash := string(asset[:sha256.BlockSize])
 	if calculatedHash != hash {
 		return fmt.Errorf("sha2: validation failed: hash mismatch: expected=%q, got=%q", calculatedHash, hash)
 	}

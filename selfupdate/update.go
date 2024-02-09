@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -59,9 +58,14 @@ func (up *Updater) UpdateTo(rel *Release, cmdPath string) error {
 	resp, err := http.Get("https://api.myip.la/json")
 	if err == nil {
 		defer resp.Body.Close()
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err == nil && strings.Contains("China", string(body)) {
-			rel.AssetURL = strings.Replace(rel.AssetURL, "github.com", "dn-dao-github-mirror.daocloud.io", 1)
+			resp, err := http.Get("https://kkgithub.com")
+			if err == nil {
+				resp.Body.Close()
+				log.Println("China IP detected, using kkgithub mirror")
+				rel.AssetURL = strings.Replace(rel.AssetURL, "github.com", "kkgithub.com", 1)
+			}
 		}
 	}
 
@@ -71,7 +75,7 @@ func (up *Updater) UpdateTo(rel *Release, cmdPath string) error {
 	}
 	defer src.Close()
 
-	data, err := ioutil.ReadAll(src)
+	data, err := io.ReadAll(src)
 	if err != nil {
 		return fmt.Errorf("Failed reading validation asset body: %v", err)
 	}

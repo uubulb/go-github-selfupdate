@@ -4,17 +4,17 @@ import (
 	"crypto/ecdsa"
 	"crypto/x509"
 	"encoding/pem"
-	"io/ioutil"
+	"os"
 	"testing"
 )
 
 func TestSHA2Validator(t *testing.T) {
 	validator := &SHA2Validator{}
-	data, err := ioutil.ReadFile("testdata/foo.zip")
+	data, err := os.ReadFile("testdata/foo.zip")
 	if err != nil {
 		t.Fatal(err)
 	}
-	hashData, err := ioutil.ReadFile("testdata/foo.zip.sha256")
+	hashData, err := os.ReadFile("testdata/foo.zip.sha256")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -25,11 +25,11 @@ func TestSHA2Validator(t *testing.T) {
 
 func TestSHA2ValidatorFail(t *testing.T) {
 	validator := &SHA2Validator{}
-	data, err := ioutil.ReadFile("testdata/foo.zip")
+	data, err := os.ReadFile("testdata/foo.zip")
 	if err != nil {
 		t.Fatal(err)
 	}
-	hashData, err := ioutil.ReadFile("testdata/foo.zip.sha256")
+	hashData, err := os.ReadFile("testdata/foo.zip.sha256")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -40,7 +40,7 @@ func TestSHA2ValidatorFail(t *testing.T) {
 }
 
 func TestECDSAValidator(t *testing.T) {
-	pemData, err := ioutil.ReadFile("testdata/Test.crt")
+	pemData, err := os.ReadFile("testdata/Test.crt")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -63,11 +63,11 @@ func TestECDSAValidator(t *testing.T) {
 	validator := &ECDSAValidator{
 		PublicKey: pubKey,
 	}
-	data, err := ioutil.ReadFile("testdata/foo.zip")
+	data, err := os.ReadFile("testdata/foo.zip")
 	if err != nil {
 		t.Fatal(err)
 	}
-	signatureData, err := ioutil.ReadFile("testdata/foo.zip.sig")
+	signatureData, err := os.ReadFile("testdata/foo.zip.sig")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -77,7 +77,7 @@ func TestECDSAValidator(t *testing.T) {
 }
 
 func TestECDSAValidatorFail(t *testing.T) {
-	pemData, err := ioutil.ReadFile("testdata/Test.crt")
+	pemData, err := os.ReadFile("testdata/Test.crt")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -100,11 +100,11 @@ func TestECDSAValidatorFail(t *testing.T) {
 	validator := &ECDSAValidator{
 		PublicKey: pubKey,
 	}
-	data, err := ioutil.ReadFile("testdata/foo.tar.xz")
+	data, err := os.ReadFile("testdata/foo.tar.xz")
 	if err != nil {
 		t.Fatal(err)
 	}
-	signatureData, err := ioutil.ReadFile("testdata/foo.zip.sig")
+	signatureData, err := os.ReadFile("testdata/foo.zip.sig")
 	if err != nil {
 		t.Fatal(err)
 	}
