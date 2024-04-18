@@ -84,7 +84,7 @@ func useGitHubMirrorIfIpInChina(rel *Release) {
 // It downloads a release asset via GitHub Releases API so this function is available for update releases on private repository.
 // If a redirect occurs, it fallbacks into directly downloading from the redirect URL.
 func (up *Updater) UpdateTo(rel *Release, cmdPath string) error {
-	useGitHubMirrorIfIpInChina(rel)
+	// useGitHubMirrorIfIpInChina(rel)
 	src, err := up.downloadDirectlyFromURL(rel.AssetURL)
 	if err != nil {
 		return err
