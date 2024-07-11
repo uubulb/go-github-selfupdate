@@ -29,7 +29,6 @@ func NewGiteaUpdater(endpoint string, config Config) (*GiteaUpdater, error) {
 	// 	token, _ = gitconfig.GithubToken()
 	// }
 	ctx := context.Background()
-	hc := newHTTPClient(ctx, token)
 
 	filtersRe := make([]*regexp.Regexp, 0, len(config.Filters))
 	for _, filter := range config.Filters {
@@ -40,8 +39,7 @@ func NewGiteaUpdater(endpoint string, config Config) (*GiteaUpdater, error) {
 		filtersRe = append(filtersRe, re)
 	}
 
-	clientoption := gitea.SetHTTPClient(hc)
-	client, err := gitea.NewClient(endpoint, clientoption)
+	client, err := gitea.NewClient(endpoint, gitea.SetToken(token))
 	if err != nil {
 		return nil, errors.New("Failed to create a new Gitea Client")
 	}
@@ -58,8 +56,6 @@ func DefaultGiteaUpdater(endpoint string) *GiteaUpdater {
 	// 	token, _ = gitconfig.GithubToken()
 	// }
 	ctx := context.Background()
-	hc := newHTTPClient(ctx, token)
-	clientoption := gitea.SetHTTPClient(hc)
-	client, _ := gitea.NewClient(endpoint, clientoption)
+	client, _ := gitea.NewClient(endpoint, gitea.SetToken(token))
 	return &GiteaUpdater{api: client, apiCtx: ctx}
 }
