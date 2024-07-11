@@ -47,7 +47,9 @@ func (up *GiteaUpdater) UpdateTo(rel *Release, cmdPath string) error {
 		return err
 	}
 	defer src.Close()
+	fmt.Println(src)
 	data, err := io.ReadAll(src)
+	fmt.Println(err)
 	if err != nil {
 		return fmt.Errorf("Failed reading validation asset body: %v", err)
 	}
