@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/blang/semver"
-	"github.com/nezhahq/go-github-selfupdate/selfupdate"
+	"github.com/uubulb/go-github-selfupdate/selfupdate"
 )
 
 const version = "1.2.3"
