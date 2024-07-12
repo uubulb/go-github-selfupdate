@@ -9,16 +9,11 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
-	"time"
 
 	"github.com/blang/semver"
 )
 
 func (up *GiteeUpdater) downloadDirectlyFromURL(assetURL string) (io.ReadCloser, error) {
-	client := &http.Client{
-		Timeout: 30 * time.Second,
-	}
-
 	req, err := http.NewRequest("GET", assetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to create HTTP request to %s: %s", assetURL, err)
@@ -30,7 +25,7 @@ func (up *GiteeUpdater) downloadDirectlyFromURL(assetURL string) (io.ReadCloser,
 	// OAuth HTTP client is not available to download blob from URL when the URL is a redirect URL
 	// returned from GitHub Releases API (response status 400).
 	// Use default HTTP client instead.
-	res, err := client.Do(req)
+	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to download a release file from %s: %s", assetURL, err)
 	}
@@ -55,6 +50,12 @@ func (up *GiteeUpdater) UpdateTo(rel *Release, cmdPath string) error {
 
 	// Debug log: Checking the response headers
 	fmt.Printf("Response type: %T\n", src)
+
+	if deadline, ok := up.apiCtx.Deadline(); ok {
+		fmt.Printf("Context deadline: %v\n", deadline)
+	} else {
+		fmt.Println("No context deadline set")
+	}
 
 	data, err := io.ReadAll(src)
 	if err != nil {
