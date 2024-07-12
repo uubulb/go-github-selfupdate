@@ -47,10 +47,18 @@ func (up *GiteeUpdater) UpdateTo(rel *Release, cmdPath string) error {
 		return err
 	}
 	defer src.Close()
+
+	// Debug log: Checking the response headers
+	fmt.Printf("Response type: %T\n", src)
+
 	data, err := io.ReadAll(src)
 	if err != nil {
 		return fmt.Errorf("Failed reading validation asset body: %v", err)
 	}
+
+	// Debug log: Checking the length of the data read
+	fmt.Printf("Read %d bytes from response body\n", len(data))
+
 	return uncompressAndUpdate(bytes.NewReader(data), rel.AssetURL, cmdPath)
 }
 
