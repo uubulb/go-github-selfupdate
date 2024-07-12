@@ -13,7 +13,7 @@ import (
 	"github.com/blang/semver"
 )
 
-func (up *GiteaUpdater) downloadDirectlyFromURL(assetURL string) (io.ReadCloser, error) {
+func (up *GiteeUpdater) downloadDirectlyFromURL(assetURL string) (io.ReadCloser, error) {
 	req, err := http.NewRequest("GET", assetURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to create HTTP request to %s: %s", assetURL, err)
@@ -40,7 +40,7 @@ func (up *GiteaUpdater) downloadDirectlyFromURL(assetURL string) (io.ReadCloser,
 // UpdateTo downloads an executable from GitHub Releases API and replace current binary with the downloaded one.
 // It downloads a release asset via GitHub Releases API so this function is available for update releases on private repository.
 // If a redirect occurs, it fallbacks into directly downloading from the redirect URL.
-func (up *GiteaUpdater) UpdateTo(rel *Release, cmdPath string) error {
+func (up *GiteeUpdater) UpdateTo(rel *Release, cmdPath string) error {
 	// useGitHubMirrorIfIpInChina(rel)
 	src, err := up.downloadDirectlyFromURL(rel.AssetURL)
 	if err != nil {
@@ -56,7 +56,7 @@ func (up *GiteaUpdater) UpdateTo(rel *Release, cmdPath string) error {
 
 // UpdateCommand updates a given command binary to the latest version.
 // 'slug' represents 'owner/name' repository on GitHub and 'current' means the current version.
-func (up *GiteaUpdater) UpdateCommand(cmdPath string, current semver.Version, slug string) (*Release, error) {
+func (up *GiteeUpdater) UpdateCommand(cmdPath string, current semver.Version, slug string) (*Release, error) {
 	if runtime.GOOS == "windows" && !strings.HasSuffix(cmdPath, ".exe") {
 		// Ensure to add '.exe' to given path on Windows
 		cmdPath = cmdPath + ".exe"
@@ -95,7 +95,7 @@ func (up *GiteaUpdater) UpdateCommand(cmdPath string, current semver.Version, sl
 
 // UpdateSelf updates the running executable itself to the latest version.
 // 'slug' represents 'owner/name' repository on GitHub and 'current' means the current version.
-func (up *GiteaUpdater) UpdateSelf(current semver.Version, slug string) (*Release, error) {
+func (up *GiteeUpdater) UpdateSelf(current semver.Version, slug string) (*Release, error) {
 	cmdPath, err := os.Executable()
 	if err != nil {
 		return nil, err
@@ -107,8 +107,8 @@ func (up *GiteaUpdater) UpdateSelf(current semver.Version, slug string) (*Releas
 // This function is low-level API to update the binary. Because it does not use GitHub API and downloads asset directly from the URL via HTTP,
 // this function is not available to update a release for private repositories.
 // cmdPath is a file path to command executable.
-func UpdateToGitea(endpoint string, assetURL, cmdPath string) error {
-	up := DefaultGiteaUpdater(endpoint)
+func UpdateToGitee(assetURL, cmdPath string) error {
+	up := DefaultGiteeUpdater()
 	src, err := up.downloadDirectlyFromURL(assetURL)
 	if err != nil {
 		return err
@@ -119,12 +119,12 @@ func UpdateToGitea(endpoint string, assetURL, cmdPath string) error {
 
 // UpdateCommand updates a given command binary to the latest version.
 // This function is a shortcut version of updater.UpdateCommand.
-func UpdateCommandGitea(endpoint string, cmdPath string, current semver.Version, slug string) (*Release, error) {
-	return DefaultGiteaUpdater(endpoint).UpdateCommand(cmdPath, current, slug)
+func UpdateCommandGitee(cmdPath string, current semver.Version, slug string) (*Release, error) {
+	return DefaultGiteeUpdater().UpdateCommand(cmdPath, current, slug)
 }
 
 // UpdateSelf updates the running executable itself to the latest version.
 // This function is a shortcut version of updater.UpdateSelf.
-func UpdateSelfGitea(endpoint string, current semver.Version, slug string) (*Release, error) {
-	return DefaultGiteaUpdater(endpoint).UpdateSelf(current, slug)
+func UpdateSelfGitee(current semver.Version, slug string) (*Release, error) {
+	return DefaultGiteeUpdater().UpdateSelf(current, slug)
 }
