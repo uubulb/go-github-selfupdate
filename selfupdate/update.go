@@ -51,40 +51,10 @@ func (up *Updater) downloadDirectlyFromURL(assetURL string) (io.ReadCloser, erro
 	return res.Body, nil
 }
 
-func useGitHubMirrorIfIpInChina(rel *Release) {
-	resp, err := http.Get("https://api.myip.la/json")
-	if err != nil {
-		return
-	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return
-	}
-	if !strings.Contains("China", string(body)) {
-		return
-	}
-	resp, err = http.Get("https://dn-dao-github-mirror.daocloud.io")
-	if err != nil {
-		return
-	}
-	defer resp.Body.Close()
-	body, err = io.ReadAll(resp.Body)
-	if err != nil {
-		return
-	}
-	if !strings.Contains("GitHub", string(body)) {
-		return
-	}
-	log.Println("China IP detected, using kkgithub mirror")
-	rel.AssetURL = strings.Replace(rel.AssetURL, "github.com", "dn-dao-github-mirror.daocloud.io", 1)
-}
-
 // UpdateTo downloads an executable from GitHub Releases API and replace current binary with the downloaded one.
 // It downloads a release asset via GitHub Releases API so this function is available for update releases on private repository.
 // If a redirect occurs, it fallbacks into directly downloading from the redirect URL.
 func (up *Updater) UpdateTo(rel *Release, cmdPath string) error {
-	// useGitHubMirrorIfIpInChina(rel)
 	src, err := up.downloadDirectlyFromURL(rel.AssetURL)
 	if err != nil {
 		return err

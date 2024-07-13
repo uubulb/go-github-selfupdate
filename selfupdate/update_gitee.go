@@ -41,7 +41,6 @@ func (up *GiteeUpdater) downloadDirectlyFromURL(assetURL string) (io.ReadCloser,
 // It downloads a release asset via GitHub Releases API so this function is available for update releases on private repository.
 // If a redirect occurs, it fallbacks into directly downloading from the redirect URL.
 func (up *GiteeUpdater) UpdateTo(rel *Release, cmdPath string) error {
-	// useGitHubMirrorIfIpInChina(rel)
 	src, err := up.downloadDirectlyFromURL(rel.AssetURL)
 	if err != nil {
 		return err
